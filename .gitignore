@@ -13,6 +13,8 @@
 /node_modules
 /yarn-error.log
 
+spring/
+
 .byebug_history
 
 vendor/bundle/

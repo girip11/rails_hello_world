@@ -39,3 +39,13 @@ rails db:rollback
 * Test driven development - Red, Green and Refactoe
 
 * The distinction between the two types of embedded Ruby is that <% ... %> executes the code inside, while <%= ... %> executes it and inserts the result into the template.
+
+* Setting up guard to run tests automatically.
+
+```bash
+bundle exec guard init
+
+# guard console
+# Press enter to run all the tests
+bundle exec guard
+```

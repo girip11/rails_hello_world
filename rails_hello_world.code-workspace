@@ -47,6 +47,11 @@
           "isAsync": false
         },
         {
+          "match": "Guardfile",
+          "cmd": "bundle exec rbprettier --write '${file}'",
+          "isAsync": false
+        },
+        {
           "match": "Vagrantfile",
           "cmd": "bundle exec rbprettier --write '${file}'",
           "isAsync": false
