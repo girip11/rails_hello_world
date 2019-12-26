@@ -1,0 +1,70 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "[ruby]": {
+      "editor.formatOnSave": true
+    },
+    "[markdown]": {
+      "editor.wordWrap": "wordWrapColumn",
+      "editor.wordWrapColumn": 80,
+      "editor.wrappingIndent": "none",
+      "editor.renderWhitespace": "all",
+      "editor.codeActionsOnSave": {
+        "source.fixAll": true
+      }
+    },
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.fontSize": 16,
+
+    "terminal.integrated.rendererType": "dom",
+    "ruby.useBundler": true,
+    "ruby.pathToBundler": "bundle",
+    "ruby.useLanguageServer": true,
+    "ruby.lint": {
+      "rubocop": {
+        "useBundler": true
+      }
+    },
+    "ruby.format": false,
+
+    "emeraldwalk.runonsave": {
+      "commands": [
+        {
+          "match": "\\.rb$",
+          // "cmd": "echo ${file}",
+          "cmd": "bundle exec rbprettier --write '${file}'",
+          "isAsync": false
+        },
+        {
+          "match": "Gemfile",
+          "cmd": "bundle exec rbprettier --write '${file}'",
+          "isAsync": false
+        },
+        {
+          "match": "Vagrantfile",
+          "cmd": "bundle exec rbprettier --write '${file}'",
+          "isAsync": false
+        }
+      ]
+    },
+
+    "ruby.lintDebounceTime": 1000,
+    "ruby.codeCompletion": "rcodetools",
+    "ruby.intellisense": "rubyLocate",
+    "solargraph.useBundler": true,
+    "solargraph.bundlerPath": "bundle",
+    "git.autorefresh": true,
+    "liveServer.settings.port": 5501,
+    "markdownlint.ignore": ["**/*.md.html"],
+    "files.insertFinalNewline": true,
+    "files.associations": {
+      "*.md.html": "markdown"
+    }
+  }
+}
