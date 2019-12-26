@@ -1,0 +1,25 @@
+---
+include:
+  - "**/*.rb"
+exclude:
+  - ".bundle/**/*"
+  - gem/dependencies/**/*
+require:
+  - actioncable
+  - actionmailer
+  - actionpack
+  - actionview
+  - activejob
+  - activemodel
+  - activerecord
+  - activestorage
+  - activesupport
+  - rails
+domains: []
+reporters:
+  - rubocop
+  - require_not_found
+plugins:
+  - runtime
+require_paths: []
+max_files: 10000
