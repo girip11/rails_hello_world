@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 class StaticPagesController < ApplicationController
-  attr_reader :title
-
-  def page_title(page_name)
-    "#{page_name} | Ruby on Rails Sample App"
-  end
+  include ApplicationHelper
 
   def home
-    @title = page_title("Home")
+    @title = page_title
   end
 
   def help
