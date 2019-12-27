@@ -3,20 +3,21 @@
 require "test_helper"
 
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
-  def page_title(page_name)
-    "%s | Ruby on Rails Sample App" % [page_name]
+  def page_title(page_name = "")
+    base_title = "Ruby on Rails Sample App"
+    page_name.empty? ? base_title : "#{page_name} | #{base_title}"
   end
 
   test "should point root to home page" do
     get root_url
     assert_response :success
-    assert_select "title", self.page_title("Home")
+    assert_select "title", self.page_title
   end
 
   test "should get home" do
     get static_pages_home_url
     assert_response :success
-    assert_select "title", self.page_title("Home")
+    assert_select "title", self.page_title
   end
 
   test "should get help" do
