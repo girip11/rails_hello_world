@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  BASE_TITLE = "Ruby on Rails Sample App"
+
   def page_title(page_name = "")
-    base_title = "Ruby on Rails Sample App"
-    page_name.empty? ? base_title : "#{page_name} | #{base_title}"
+    if page_name.empty?
+      ApplicationHelper::BASE_TITLE
+    else
+      "#{page_name} | #{ApplicationHelper::BASE_TITLE}"
+    end
   end
 end
