@@ -313,6 +313,139 @@ The only requirement for `has_secure_password` to work its magic is for the corr
 rails generate migration add_password_digest_to_users password_digest:string
 ```
 
+## Rails environment
+
+* Rails supports the following environments by default
+  * development
+  * test
+  * production
+
+```ruby
+# To print the current environment name
+puts Rails.env
+
+# Checking the current rails environment
+Rails.env.development?
+
+# Launching rails console in an environment
+bundle exec rails console # default env is development
+bundle exec rails console test
+
+# Launching rails server
+bundle exec rails server -e development
+bundle exec rails server -e test
+bundle exec rails server --environment production
+
+# Running database migration
+bundle exec rails db:migrate RAILS_ENV=production
+```
+
+## `debug` method in rails views
+
+* Adding `debug(params)` to rails views renders the following HTML
+
+```HTML
+<pre class="debug_dump">
+---
+!ruby/object: ActionController::Parameters
+parameters: !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+  controller: static_pages
+  action: home
+permitted: false
+</pre>
+```
+
+* This is a YAML representation of `params`
+
+```ruby
+user = User.find(1)
+user_yaml = user.attributes.to_yaml
+
+# To get the YAML representation of a ruby model object
+puts user_yaml
+
+# shorthand for `puts user.attributes.to_yaml` is using the method `y`
+y user.attributes
+```
+
+## Rails REST Architecture
+
+> REST architecture favored in Rails applications - representing data as resources that can be created, shown, updated, or destroyed—four actions corresponding to the four fundamental operations POST, GET, PATCH, and DELETE defined by the HTTP standard.
+
+* Routes based on REST in rails for a User resource
+
+| HTTP request | URL           | Action  | Named route          | Purpose                          |
+| ------------ | ------------- | ------- | -------------------- | -------------------------------- |
+| GET          | /users        | index   | users_path           | page to list all users           |
+| GET          | /users/1      | show    | user_path(user)      | page to show user                |
+| GET          | /users/new    | new     | new_user_path        | page to make a new user (signup) |
+| POST         | /users        | create  | users_path           | create a new user                |
+| GET          | /users/1/edit | edit    | edit_user_path(user) | page to edit user with id 1      |
+| PATCH        | /users/1      | update  | user_path(user)      | update user                      |
+| DELETE       | /users/1      | destroy | user_path(user)      | delete user                      |
+
+## Debugger
+
+* Uses **byebug** gem. Just need to add a line consisting of `debugger` to required controller action.
+
+```ruby
+class UsersController < ApplicationController
+
+  def show
+    @user = User.find(params[:id])
+    debugger
+  end
+
+end
+```
+
+* The **Rails server** shows a byebug prompt. We can treat this like **rails console**.
+
+* To release the prompt and continue execution of the application, press **Ctrl-D**, then remove the debugger line from the show action.
+
+> Whenever you’re confused about something in a Rails application, it’s a good practice to put debugger close to the code you think might be causing the trouble. Inspecting the state of the system using byebug is a powerful method for tracking down application errors and interactively debugging your application.
+
+**NOTE**: By default, **methods defined in any helper file are automatically available in any view**
+
+## Strong parameters
+
+> Passing in a raw params hash will cause an error to be raised, so that Rails applications are now immune to mass assignment vulnerabilities by default.
+
+```ruby
+params.require(:user).permit(:name, :email, :password, :password_confirmation)
+```
+
+## Shared Partials
+
+> This reflects the common Rails convention of using a dedicated **shared/** directory for partials expected to be used in views across multiple controllers.
+
+## `render` and `redirect_to`
+
+* `render` - renders a template
+* `redirect_to` - redirects to a url which may render a view template
+
+## Flash message
+
+* `flash` - hash like method. Used to display flash messages on the website.
+
+* Inside the controller the below code sets the flash.
+
+```ruby
+flash[:success] = "Sign up successful!"
+```
+
+* To use the `flash` inside the views
+
+```ruby
+<% flash.each do |message_type, message| %>
+  <%= "<div class=\"alert alert-#{message_type}\">#{message}</div>"  %>
+<% end %>
+```
+
+## Testing in rails
+
+* [Testing rails application](https://guides.rubyonrails.org/testing.html)
+
 ---
 
 ## References
