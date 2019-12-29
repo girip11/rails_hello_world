@@ -136,3 +136,185 @@ end
 puts route_module.about_path
 puts route_module.about_url(host: "example.com") # prints http://example.com/about
 ```
+
+---
+
+## Rails Models
+
+* The default Rails solution to the problem of persistence is to use a database for long-term data storage, and the default library for interacting with the database is called Active Record
+
+* In contrast to the plural convention for controller names, model names are singular: a Users controller, but a User model.
+
+* The table name is plural (users) even though the model name is singular (User), which reflects a linguistic convention followed by Rails: a model represents a single user, whereas a database table consists of many users
+
+* [Rails migration documentation]([guides.rubyonrails.org/migrations.html](https://edgeguides.rubyonrails.org/active_record_migrations.html))
+
+* `rails console --sandbox` - In rails sandbox environment, any modifications you make will be rolled back on exit.
+
+```ruby
+john = User.new(name: "John", email: "john@example.com")
+
+if john.valid? && john.save
+  puts "User saved successfully to DB"
+end
+
+# To create a user object and save it to
+# database in one step use the `create` method
+# `create` method returns the user object
+jane = User.new(name: "Jane", email: "jane@example.com")
+
+# deletes the user from db
+jane.destroy
+
+# get all users
+User.all.to_a.each {|user| puts user.name}
+
+# to see where the methods like name and email come from
+jane.method(:name).owner
+
+# to list all the methods on the User attributes
+jane.method(:name).owner.instance_methods(false)
+
+# To find a user by id
+# A nonexistent Active Record id causes `find` to raise an
+# ActiveRecord::RecordNotFound exception
+usr = User.find(3)
+
+# Find user by attributes
+usr = User.find_by(email:"jane@example.com")
+
+# new syntax
+usr = User.find_by_email("jane@example.com")
+```
+
+## Updating user objects
+
+* Using `save` method
+
+```ruby
+user = User.find_by_email("jane@example.com")
+puts user.email
+user.email = "jane_doe@example.com"
+user.save
+
+puts user.created_at
+puts user.updated_at
+
+# `reload` fetches the database information and reloads the object
+user.email = "jane@example.org"
+
+# if the object is reloaded before save, the changes will be lost
+puts user.reload.email # prints jane_doe@example.com
+```
+
+* Using `update_attributes` method
+
+```ruby
+user = User.find_by_email("john@example.com")
+
+# this method accepts a hash of attributes
+# object is updated only after the validation.
+user.update_attributes(name: "John Doe", email: "john_doe@example.com")
+
+# To update single attribute
+# this method bypasses the model validation
+user.update_attribute(:name, "John_Doe")
+```
+
+## Model validations
+
+* `validates` - method for validating model fields
+
+```ruby
+# validates :name, presence: true
+usr = User.new(email: "jacob@example.com")
+usr.valid?
+
+# to get the error messages
+puts usr.errors.full_messages
+
+errors_hash = usr.errors.messages
+
+puts errors_hash[:name]
+```
+
+* Format validation
+
+```ruby
+validates :email, format: {with: /regex/}
+```
+
+| Regex                                | Meaning                                           |
+| ------------------------------------ | ------------------------------------------------- |
+| /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i | full regex                                        |
+| /                                    | start of regex                                    |
+| \A                                   | match start of a string                           |
+| [\w+\-.]+                            | at least one word character, plus, hyphen, or dot |
+| @                                    | literal “at sign”                                 |
+| [a-z\d\-.]+                          | at least one letter, digit, hyphen, or dot        |
+| \.                                   | literal dot                                       |
+| [a-z]+                               | at least one letter                               |
+| \z                                   | match end of a string                             |
+| /                                    | end of regex                                      |
+| i                                    | case-insensitive                                  |
+
+## Uniqueness
+
+`validates` method accepts the following options for ensuring uniqueness of a field
+
+* `uniqueness: true` - case sensitive uniqueness
+* `uniqueness: { case_sensitive: false }` - case insensitive uniqueness.
+
+**The Active Record uniqueness validation does not guarantee uniqueness at the database level**. Here’s a scenario that explains why:
+
+* Alice signs up for the sample app, with address alice@wonderland.com.
+* Alice accidentally clicks on “Submit” twice, sending two requests in quick succession.
+* The following sequence occurs: request 1 creates a user in memory that passes validation, request 2 does the same, request 1’s user gets saved, request 2’s user gets saved.
+* Result: two user records with the exact same email address, despite the uniqueness validation
+
+In such cases, it is always better to enforce uniqueness at the database level.
+
+## Database indices
+
+Adding a database index avoids a full table scan and increases the look up efficiency.
+
+> To understand a database index, it’s helpful to consider the analogy of a book index. In a book, to find all the occurrences of a given string, say “foobar”, you would have to scan each page for “foobar”—the paper version of a full-table scan. With a book index, on the other hand, you can just look up “foobar” in the index to see all the pages containing “foobar”. A database index works essentially the same way.
+
+**NOTE**: If rails database migration fails or gets stuck, try exiting any running sandbox console sessions, which can lock the database and prevent migrations.
+
+## Fixtures
+
+* Fixtures contains sample data for the test database.
+* Fixture data doesn’t get run through the validations.
+
+* Active record life cycle is associated with callbacks
+  * `before_save`
+  * `after_save` etc
+
+```ruby
+class User < ApplicationRecord
+  before_save { self.email = email.downcase }
+end
+```
+
+## User authentication
+
+> The method for authenticating users will be to take a submitted password, hash it, and compare the result to the hashed value stored in the database. If the two match, then the submitted password is correct and the user is authenticated. By comparing hashed values instead of raw passwords, we will be able to authenticate users without storing the passwords themselves. This means that, even if our database is compromised, our users’ passwords will still be secure.
+
+`has_secure_password` uses a hash function called **bcrypt**. When `has_secure_password` is included in a model, it adds the following functionality:
+
+* The ability to save a securely hashed **password_digest** attribute to the database
+* A pair of virtual attributes (password and password_confirmation), including presence validations upon object creation and a validation requiring that they match
+* An `authenticate` method that returns the user when the password is correct (and false otherwise)
+
+The only requirement for `has_secure_password` to work its magic is for the corresponding model to have an attribute called **password_digest**.
+
+```ruby
+rails generate migration add_password_digest_to_users password_digest:string
+```
+
+---
+
+## References
+
+* [Rails 5 tutorial](https://www.learnenough.com/ruby-on-rails-4th-edition-tutorial/modeling_users)
