@@ -286,6 +286,7 @@ Adding a database index avoids a full table scan and increases the look up effic
 
 * Fixtures contains sample data for the test database.
 * Fixture data doesn’t get run through the validations.
+* Fixtures support embedded Ruby
 
 * Active record life cycle is associated with callbacks
   * `before_save`
@@ -445,6 +446,21 @@ flash[:success] = "Sign up successful!"
 ## Testing in rails
 
 * [Testing rails application](https://guides.rubyonrails.org/testing.html)
+
+## Sessions and Temporary cookies
+
+* Most common implementation of session in rails uses cookies.
+* `session` - Rails method to create temporary sessions. Sessions expire on browser close.
+
+* In rails, a session is persisted in cookies. A session is treated like a RESTful resource.
+
+* `session[:user_id] = user.id` creates a temporary cookie. These cookies are automatically encrypted.
+
+## Flash message and `render`
+
+* Re-rendering a template with `render` doesn’t count as a request. Flash message will be displayed in more page.
+
+* Replace `flash` with the special variant `flash.now`, which is specifically designed for displaying flash messages on rendered pages.
 
 ---
 

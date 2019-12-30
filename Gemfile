@@ -27,6 +27,7 @@ gem "turbolinks", "~> 5"
 gem "jbuilder", "~> 2.5"
 
 gem "bootstrap-sass", "~> 3.3"
+gem "jquery-rails", "4.3.1"
 gem "sassc-rails", "~> 2.1"
 
 # bcrypt hash functionality

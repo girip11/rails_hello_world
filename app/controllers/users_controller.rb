@@ -19,6 +19,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      log_in(@user)
       flash[:success] = "Sign up successful!"
       # we can use any of these statements
       # redirect_to @user or
