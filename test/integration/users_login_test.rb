@@ -10,7 +10,7 @@ require "test_helper"
 class UsersLoginTest < ActionDispatch::IntegrationTest
   def setup
     #users correspond to users.yml
-    @user = users(:john)
+    @user = users(:jane)
   end
 
   test "login with invalid information" do
@@ -48,11 +48,25 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_not is_logged_in?
 
     assert_redirected_to root_path
+
+    # Try logging out already logged out site
+    delete logout_path
+
     follow_redirect!
     assert_template "static_pages/home"
 
     assert_select "a[href=?]", login_path, count: 1
     assert_select "a[href=?]", logout_path, count: 0
     assert_select "a[href=?]", user_path(@user), count: 0
+  end
+
+  test "login user with remembering" do
+    log_in_as(@user.email, remember_me: "1")
+    assert cookies[:remember_token].present?
+  end
+
+  test "login user without remembering" do
+    log_in_as(@user.email, remember_me: "0")
+    assert cookies[:remember_token].blank?
   end
 end

@@ -12,6 +12,8 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(input_params[:password])
       log_in(user)
+      # forget user on else is to clear any existing cookies
+      input_params[:remember_me].to_i == 1 ? remember(user) : forget(user)
       flash[:success] = "Logged in sucessfully"
       redirect_to user_path(user)
     else
@@ -21,13 +23,13 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    log_out
+    log_out if logged_in?
     redirect_to root_path
   end
 
   private
 
   def session_params
-    params.require(:session).permit(:email, :password)
+    params.require(:session).permit(:email, :password, :remember_me)
   end
 end

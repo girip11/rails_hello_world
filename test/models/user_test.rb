@@ -118,4 +118,17 @@ class UserTest < ActiveSupport::TestCase
       @user.destroy if @user.persisted?
     end
   end
+
+  test "authenticated? should return false for logged out user" do
+    @user = users(:jane)
+
+    # remember_me
+    @user.remember
+    remember_token = @user.remember_token
+    assert @user.authenticated?(remember_token)
+
+    # forget user and then validate
+    @user.forget
+    assert_not @user.authenticated?(remember_token)
+  end
 end

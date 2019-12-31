@@ -462,6 +462,36 @@ flash[:success] = "Sign up successful!"
 
 * Replace `flash` with the special variant `flash.now`, which is specifically designed for displaying flash messages on rendered pages.
 
+## Persistent sessions
+
+* Rails provides `cookies` - for persisting sessions. Vulnerable to session hijacking.
+
+* Information stored using `session` - secure
+
+* A cookie consists of two pieces of information, a value and an optional expires date
+
+```ruby
+cookies[:remember_token] = { value:   remember_token,
+                             expires: 20.years.from_now.utc }
+
+```
+
+* This pattern of setting a cookie that expires 20 years in the future is so common that Rails has a special `permanent` method to implement it, so that we can simply write
+
+```ruby
+cookies.permanent[:remember_token] = remember_token
+```
+
+* Signed cookie - encrypts the cookie before placing in the browser.
+
+```ruby
+# setting the cookie securely
+cookies.permanent.signed[:user_id] = user.id
+
+# retrieving data from the cookie after automatic decrypting
+puts cookies.signed[:user_id]
+```
+
 ---
 
 ## References
