@@ -32,6 +32,11 @@ gem "sassc-rails", "~> 2.1"
 
 # bcrypt hash functionality
 gem "bcrypt", "~> 3.1"
+
+gem "faker", "~> 2.1"
+
+gem "will_paginate", "~> 3.2.0"
+gem "bootstrap-will_paginate", "~> 1.0"
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
@@ -63,6 +68,7 @@ group :development do
 
   # Code formatting
   gem "prettier", require: false
+  gem "htmlbeautifier", require: false
 
   gem "solargraph", require: false
 

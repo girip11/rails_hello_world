@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
       # forget user on else is to clear any existing cookies
       input_params[:remember_me].to_i == 1 ? remember(user) : forget(user)
       flash[:success] = "Logged in sucessfully"
-      redirect_to user_path(user)
+      redirect_back_or(user)
     else
       flash.now[:danger] = "Invalid email, password combination"
       render "sessions/new"

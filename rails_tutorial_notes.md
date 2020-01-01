@@ -492,6 +492,50 @@ cookies.permanent.signed[:user_id] = user.id
 puts cookies.signed[:user_id]
 ```
 
+## Rails `POST` for create and `PATCH` for update
+
+When constructing a form using `form_for(@user)`, Rails uses `POST` if `@user.new_record?` is `true` and `PATCH` if it is `false`
+
+## Rails partials
+
+* [Utilizing View partials](http://tutorials.jumpstartlab.com/topics/better_views/view_partials.html)
+
+* `render` by default, looks for the partial in the same directory as the current view template.
+
+```erb
+<!-- This renders the partial _comments.html.erb -->
+<%= render partial: "comments" %>
+
+<!-- If the partial is relocated to folder like shared -->
+<%= render partial: "shared/comments" %>
+```
+
+* Variables can be passed to the partials using `locals` options which takes a `Hash`.
+
+```erb
+ <!--render partial option is clubbed with locals option for passing data  -->
+<!-- Within the comments partial variable `article` can be used -->
+ <%= render partial: "shared/comments", locals: {article: @article} %>
+
+<!-- above syntax can be shortened as -->
+ <%= render "shared/comments", article: @article %>
+```
+
+* Whenever we have an iteration loop in a view template, it is a candidate for extraction to a collection partial
+
+* In case of rendering collections, each item by default is stored in the variable having same name as the partials file name.
+
+```erb
+<ul id='articles'><%= render partial: 'article', collection: @articles %></ul>
+
+<!-- above syntax can be shortened as -->
+<ul id='articles'><%= render @articles %></ul>
+```
+
+## Rails redirect
+
+* Redirects don’t happen until an explicit `return` or **the end of the method**, so any code appearing after the redirect is still executed.
+
 ---
 
 ## References

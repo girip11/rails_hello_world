@@ -11,7 +11,7 @@ class User < ApplicationRecord
             format: { with: EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
 
-  validates :password, presence: true, length: { minimum: 6, maximum: 15 }
+  validates :password, presence: true, length: { minimum: 6, maximum: 15 }, allow_nil: true
   # Inside the User model the self keyword is optional on the RHS
   before_save { self.email = self.email.downcase }
 

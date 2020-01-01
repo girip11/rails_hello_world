@@ -17,6 +17,9 @@
         "source.fixAll": true
       }
     },
+    "[erb]": {
+      "editor.formatOnSave": true
+    },
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
@@ -39,6 +42,11 @@
           "match": "\\.rb$",
           // "cmd": "echo ${file}",
           "cmd": "bundle exec rbprettier --write '${file}'",
+          "isAsync": false
+        },
+        {
+          "match": "\\.erb$",
+          "cmd": "bundle exec htmlbeautifier '${file}'",
           "isAsync": false
         },
         {
@@ -69,7 +77,8 @@
     "markdownlint.ignore": ["**/*.md.html"],
     "files.insertFinalNewline": true,
     "files.associations": {
-      "*.md.html": "markdown"
+      "*.md.html": "markdown",
+      "*.erb": "erb"
     }
   }
 }
