@@ -125,10 +125,17 @@ class UserTest < ActiveSupport::TestCase
     # remember_me
     @user.remember
     remember_token = @user.remember_token
-    assert @user.authenticated?(remember_token)
+    assert @user.authenticated?(:remember, remember_token)
 
     # forget user and then validate
     @user.forget
-    assert_not @user.authenticated?(remember_token)
+    assert_not @user.authenticated?(:remember, remember_token)
+  end
+
+  test "authenticated? should return false for user with nil digest" do
+    @user = users(:jane)
+    assert_not @user.authenticated?(:remember, "")
+    assert_not @user.authenticated?(:activation, "")
+    assert_not @user.authenticated?(:unknown, "")
   end
 end

@@ -53,4 +53,56 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
 
     assert_difference("User.count", -1) { delete user_path(@non_admin) }
   end
+
+  test "index should not list unactivated users" do
+    get signup_path
+
+    # signup a new user
+    assert_difference "User.count", 1 do
+      post users_path,
+           params: {
+             user: {
+               name: "Example User",
+               email: "user@example.com",
+               password: "password",
+               password_confirmation: "password",
+             },
+           }
+    end
+
+    unactivated_user = assigns(:user)
+    assert_not unactivated_user.activated?
+    # verify user login
+    log_in_as(@admin.email)
+    assert is_user_logged_in?(@admin.id)
+
+    get users_path
+    assert_select "a[href=?]", user_path(unactivated_user), text: unactivated_user.name, count: 0
+  end
+
+  test "admin should not be able to view unactivated users" do
+    get signup_path
+
+    # signup a new user
+    assert_difference "User.count", 1 do
+      post users_path,
+           params: {
+             user: {
+               name: "Example User",
+               email: "user@example.com",
+               password: "password",
+               password_confirmation: "password",
+             },
+           }
+    end
+
+    unactivated_user = assigns(:user)
+    assert_not unactivated_user.activated?
+    # verify user login
+    log_in_as(@admin.email)
+    assert is_user_logged_in?(@admin.id)
+
+    get user_path(unactivated_user)
+    assert_redirected_to root_path
+  end
 end

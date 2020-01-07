@@ -55,10 +55,17 @@ end
 
 group :development do
   gem "debase", require: false
+
+  # For a test smtp server and viewing mails
+  # Dont install this gem as part of bundler.
+  # Install on to the devbox
+  # gem "mailcatcher", require: false
+
   gem "ruby-debug-ide", require: false
 
   # advanced ruby repl console
   gem "pry", require: false
+  gem "pry-rails", require: false
 
   gem "rcodetools", require: false
   gem "rubocop", "~> 0.70.0", require: false

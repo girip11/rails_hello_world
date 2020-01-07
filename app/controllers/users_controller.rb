@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def index
     @title = page_title("All users")
 
-    @users = User.paginate(page: params[:page])
+    @users = User.where(activated: true).paginate(page: params[:page])
   end
 
   def new
@@ -22,6 +22,13 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id]) if params.fetch(:id, nil)
+
+    # This is for admin who try to view the users by typing url
+    unless @user.activated?
+      redirect_to(root_url)
+      return
+    end
+
     @title = @user.nil? ? page_title : page_title(@user.name)
   end
 
@@ -29,13 +36,15 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      log_in(@user)
-      flash[:success] = "Sign up successful!"
+      @user.send_activation_email
+      # log_in(@user)
+      # flash[:success] = "Sign up successful!"
+      flash[:info] = "Please check your email to activate your account."
       # we can use any of these statements
       # redirect_to @user or
       # redirect_to user_url(@user) or
       # redirect_to user_path(@user)
-      redirect_to(@user)
+      redirect_to(root_path)
     else
       render "new"
     end

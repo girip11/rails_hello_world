@@ -536,6 +536,24 @@ When constructing a form using `form_for(@user)`, Rails uses `POST` if `@user.ne
 
 * Redirects don’t happen until an explicit `return` or **the end of the method**, so any code appearing after the redirect is still executed.
 
+## ActiveRecord callbacks
+
+* A `before_save` callback is automatically called before the object is saved, which includes both object **creation and updation**.
+
+* `before_create` - called only before the rails model gets created.
+
+## Rails named route and query parameters
+
+* When using named routes to define query parameters, Rails automatically escapes out any special characters.
+
+```ruby
+# http://www.example.com/account_activations/q5lt38hQDc_959PVoo6b7A/edit?email=foo%40example.com
+edit_account_activation_url(@user.activation_token, email: @user.email)
+
+# Print the below statement in the rails console
+puts Rails.application.routes.url_helpers.edit_account_activation_url(user.activation_token, email: user.email, host: "www.example.com")
+```
+
 ---
 
 ## References
